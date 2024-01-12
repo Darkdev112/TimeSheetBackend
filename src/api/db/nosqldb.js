@@ -3,7 +3,7 @@ const logger = require('../../config/logger');
 
 const connectDB = async () => {
   try {
-    const connection = await mongoose.connect(process.env.MONGO_URI); // Removed deprecated options
+    const connection = await mongoose.connect(process.env.MONGO_URI); 
     if (connection) {
       logger.info('NoSQL Database Connected');
     }

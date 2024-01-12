@@ -2,7 +2,7 @@ const express = require('express')
 const cors = require('cors')
 const config = require('./config/config')
 const morgan = require("./config/morgan");
-const {dummyTodoRoutez} = require('./api/routes');
+const {dummyTodoRoutez,authRoute} = require('./api/routes');
 
 const appLoader = async(app)=>{
 
@@ -33,7 +33,7 @@ const appLoader = async(app)=>{
 
 
     //routing
-    app.use(dummyTodoRoutez)
+    app.use(dummyTodoRoutez,authRoute);
 
 }
 
