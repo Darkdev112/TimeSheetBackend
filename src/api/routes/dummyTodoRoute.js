@@ -1,21 +1,21 @@
 const express=require("express");
 const route=express.Router();
-const{dummyTodoControllerz}=require("../controllers");
+const{dummyTodoController}=require("../controllers");
 
 //get
-route.get("/get",[],dummyTodoControllerz.getTodo);
+route.get("/get",[],dummyTodoController.getTodo);
 
 
 //getSingleTodo
-route.get("/getOne/:id",[],dummyTodoControllerz.getATodo);
+route.get("/getOne/:id",[],dummyTodoController.getATodo);
 
 //post
-route.post("/post",[],dummyTodoControllerz.postTodo);
+route.post("/post",[],dummyTodoController.postTodo);
 
 //edit
-route.put("/edit/:id",[],dummyTodoControllerz.updateTodo);
+route.put("/edit/:id",[],dummyTodoController.updateTodo);
 
 // //delete
-route.delete("/delete/:id",[],dummyTodoControllerz.deleteTodo);
+route.delete("/delete/:id",[],dummyTodoController.deleteTodo);
 
 module.exports=route;

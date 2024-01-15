@@ -1,5 +1,5 @@
 const dummyTodoRoutez=require('./dummyTodoRoute');
-const authRoute=require("./userAuth.sql");
+const authRoute=require("./auth.sql.js");
 
 module.exports={
     dummyTodoRoutez,

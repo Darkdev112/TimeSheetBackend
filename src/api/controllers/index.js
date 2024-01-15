@@ -1,7 +1,7 @@
-const dummyTodoControllerz=require("./dummyTodoController")
-const authUser=require("./auth.sql");
+const dummyTodoController=require("./dummyTodoController")
+const authController=require("./auth.sql.js");
 
 module.exports={
-    dummyTodoControllerz,
-    authUser
+    dummyTodoController,
+    authController
 }

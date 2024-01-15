@@ -1,9 +1,17 @@
-const Todoz=require("./dummyTodoModel");
-const {user} = require("./userTable.sql");
-const {userAuth}=require("./userAuth.sql");
+const Todo = require("./dummyTodoModel");
+const User = require("./user.sql");
+const Auth = require("./auth.sql");
+
+//associations
+Auth.hasOne(User,{
+    foreignKey : 'auth_id'
+})
+User.belongsTo(Auth,{
+    foreignKey: 'auth_id'
+})
 
 module.exports={
-    Todoz,
-    user,
-    userAuth
+    Todo,
+    User,
+    Auth,
 }
