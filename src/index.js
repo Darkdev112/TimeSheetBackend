@@ -11,6 +11,7 @@ async function startServer(){
     const app = express();
     await mongoDBServer.connectDB();
     await postgresServer.connectSQL();
+    await postgresServer.sequel.sync({alter : true})
 
     await appLoader(app)
 

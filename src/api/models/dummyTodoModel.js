@@ -1,17 +1,24 @@
 // models/todo.js
-const { DataTypes} = require('sequelize');
+const { DataTypes, Model} = require('sequelize');
 const {postgresServer}= require('../db'); 
 
-const Todo = postgresServer.sequel.define('todoz', {
+class Todo extends Model{}
+
+Todo.init({
   description:{
-    type:DataTypes.STRING(255)
+    type:DataTypes.STRING
   },
   createdAt:{
     type:DataTypes.DATE
   },
   updatedAt:{
     type:DataTypes.DATE
-  },
-});
+  }
+},{
+  sequelize : postgresServer.sequel,
+  modelName : 'todos',
+  timestamps : false,
+  freezeTableName : true
+})
 
-module.exports = {Todo};
+module.exports = Todo;

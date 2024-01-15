@@ -1,53 +1,41 @@
-const { userAuth,user } = require('../models');
-const logger=require("../../config/logger")
-const bcrypt=require("bcrypt");
+const bcrypt = require('bcrypt')
+const { Auth, User } = require('../models');
+const logger = require("../../config/logger")
 
 
 const createUser = async (req, res, next) => {
   try {
-    const {
-      email,
-      password,
-    } = req.body;
+    const { email, password, role_id } = req.body;
 
-    const existingUser = await userAuth.findOne({ where: { email:email } });
-
+    const existingUser = await Auth.findOne({
+      where: {
+        email: email
+      }
+    })
     if (existingUser) {
       // req.session.error = "User already exists";
       return res.status(404).send({ msg: "User already exists" });
     }
 
-    
     const bcryptPassword = await bcrypt.hash(password, 10);
 
-    
-      let newUser = await userAuth.create({
-        email,
-        password: bcryptPassword,
-      });
 
-    const currUser=await userAuth.findOne({ where: { email } });
+    const newAuth = await Auth.create({
+      email: email,
+      password: bcryptPassword,
+    });
 
-    let updatedUser;
+    const newUser = await User.create({
+      email: email,
+      role_id: (role_id ? role_id : 4),
+      auth_id: newAuth.auth_id
+    })
 
-    if (!req.body.role) {
-      updatedUser = await user.create({
-        user_id:currUser.id,
-        role_id:4,
-        email:email,
-      });
-    } else {
-      updatedUser = await user.create({
-        user_id:currUser.id,
-        role_id: req.body.role,
-        email:email
-      });
-    }
+    res.status(201).send({ user: newUser });
 
-    return res.status(201).send(newUser);
-  } catch (error) { 
+  } catch (error) {
     logger.error(`error :- ${error.message}`);
-    next(error); 
+    next(error);
   }
 };
 
@@ -55,32 +43,18 @@ const loginUser = async (req, res, next) => {
   try {
     const { email, password } = req.body
 
-    const existingUser = await userAuth.findOne({ where: { email:email } });
-    if (!existingUser) {
-      //  req.session.error = "Invalid Credentials";
-       res.status(401).send('Invalid Credentials!');
-    }
+    const existingAuth = await Auth.findByCredentials(email, password)
 
-    if (await bcrypt.compare(password, existingUser.password)) {
-      const token = jwt.sign({email: existingUser.email}, `${config.jwt_secret}`)
+    const token = await existingAuth.generateToken()
 
-      if (token) {
-        // req.session.isAuth = true;
-        // req.session.username = user.username;
-        res.status(200).send({token :  token })
-      }
-      else {
-        res.status(500).send("Internal Server Error!")
-      }
-    }
-    else{
-      // req.session.error = "Invalid Credentials";
-      res.status(401).send('Invalid Credentials!');
-      }
+    // req.session.isAuth = true;
+    // req.session.username = user.username;
+
+    res.status(200).send({ token: token })
 
   } catch (error) {
     logger.error(`error :- ${error.message}`);
-    next(error); 
+    next(error);
   }
 }
 
