@@ -26,10 +26,6 @@ const createUser = async (req, res, next) => {
         password: bcryptPassword,
       });
 
-
-
-
-
     const currUser=await userAuth.findOne({ where: { email } });
 
     let updatedUser;
@@ -48,10 +44,6 @@ const createUser = async (req, res, next) => {
       });
     }
 
-
-
-
-
     return res.status(201).send(newUser);
   } catch (error) { 
     logger.error(`error :- ${error.message}`);
@@ -59,4 +51,37 @@ const createUser = async (req, res, next) => {
   }
 };
 
-module.exports = { createUser };
+const loginUser = async (req, res, next) => {
+  try {
+    const { email, password } = req.body
+
+    const existingUser = await userAuth.findOne({ where: { email:email } });
+    if (!existingUser) {
+      //  req.session.error = "Invalid Credentials";
+       res.status(401).send('Invalid Credentials!');
+    }
+
+    if (await bcrypt.compare(password, existingUser.password)) {
+      const token = jwt.sign({email: existingUser.email}, `${config.jwt_secret}`)
+
+      if (token) {
+        // req.session.isAuth = true;
+        // req.session.username = user.username;
+        res.status(200).send({token :  token })
+      }
+      else {
+        res.status(500).send("Internal Server Error!")
+      }
+    }
+    else{
+      // req.session.error = "Invalid Credentials";
+      res.status(401).send('Invalid Credentials!');
+      }
+
+  } catch (error) {
+    logger.error(`error :- ${error.message}`);
+    next(error); 
+  }
+}
+
+module.exports = { createUser, loginUser };
